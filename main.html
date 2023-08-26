@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dynamic Menu Bar and Banner</title>
+  <style>
+    /* Add your styles here */
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+    }
+    
+    #top-menu {
+      background-color: #333;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 10px 0;
+    }
+    
+    #top-menu ul {
+      list-style: none;
+      display: flex;
+      margin: 0;
+      padding: 0;
+    }
+    
+    #top-menu li {
+      margin: 0 15px;
+      position: relative;
+    }
+    
+    #top-menu a {
+      text-decoration: none;
+      color: white;
+    }
+    
+    #top-menu .dropdown-content {
+      display: none;
+      position: absolute;
+      background-color: #333;
+      min-width: 200px;
+      z-index: 1;
+    }
+    
+    #top-menu li:hover .dropdown-content {
+      display: block;
+    }
+    
+    #top-menu .dropdown-content a {
+      color: white;
+      padding: 10px;
+      text-decoration: none;
+      display: block;
+    }
+    
+    .banner {
+      background-color: #01070e;
+      color: white;
+      text-align: center;
+      padding: 20px;
+    }
+  </style>
+</head>
+<body>
+  <nav id="top-menu">
+    <ul>
+      <!-- Menu items will be dynamically generated here -->
+      
+        <!-- Menu items will be dynamically generated here -->
+        <li><a href="#home">Home</a></li>
+        <li><a href="#about">About</a></li>
+        <li>
+          <a href="https://fakestoreapi.com/products/categories">Our Products</a>
+          <ul class="dropdown-content">
+            <li><a href="https://fakestoreapi.com/products">Product 1</a></li>
+            <li><a href="https://fakestoreapi.com/products">Product 2</a></li>
+            <li><a href="https://fakestoreapi.com/products">Product 3</a></li>
+            <li><a href="https://fakestoreapi.com/products">Product 4</a></li>
+          </ul>
+        </li>
+        <li><a href="C:\Users\hp\contactus.html">Contact Us</a></li>
+      
+    </ul>
+  </nav>
+ 
+
+  <div class="banner">
+    <h1>Welcome!</h1>
+  </div>
+
+
+  <!-- Adding an image -->
+  <img src="C:\Users\hp\Desktop\Untitled.png" alt="Your Image Description" width="100%">
+  <div id="product-list">
+    <!-- Product listing will be dynamically generated here -->
+  </div>
+
+
+  <script>
+    
+    const topMenu = document.getElementById('top-menu');
+    const productList = document.getElementById('product-list');
+
+    function createMenuItem(item) {
+      const menuItem = document.createElement('li');
+      const menuLink = document.createElement('a');
+      menuLink.textContent = item.name;
+      menuLink.setAttribute('href', '#' + item.id);
+      menuItem.appendChild(menuLink);
+      
+      if (item.child) {
+        const subMenu = document.createElement('ul');
+        subMenu.classList.add('dropdown-content');
+        item.child.forEach(subItem => {
+          const subMenuItem = createMenuItem(subItem);
+          subMenu.appendChild(subMenuItem);
+        });
+        menuItem.appendChild(subMenu);
+      }
+      
+      return menuItem;
+    }
+
+    function buildMenu(navbarArray, menuContainer) {
+      navbarArray.forEach(item => {
+        const menuItem = createMenuItem(item);
+        menuContainer.appendChild(menuItem);
+      });
+    }
+    async function fetchProductListing() {
+      try {
+        const response = await fetch('https://fakestoreapi.com/products');
+        const products = await response.json();
+
+        products.forEach(product => {
+          const productItem = document.createElement('div');
+          productItem.classList.add('product-item');
+          productItem.innerHTML = `
+            <h3>${product.title}</h3>
+            <p>${product.description}</p>
+            <span>Price: $${product.price}</span>
+          `;
+          productList.appendChild(productItem);
+        });
+      } catch (error) {
+        console.error('Error fetching product listing:', error);
+      }
+    }
+
+    // Function to fetch and display product categories/types
+    async function fetchProductTypes() {
+      try {
+        const response = await fetch('https://fakestoreapi.com/products/categories');
+        const productTypes = await response.json();
+
+        // You can use productTypes to create a menu for product types
+      } catch (error) {
+        console.error('Error fetching product types:', error);
+      }
+    }
+
+    // Build the menu and fetch product listing
+    buildMenu(navbar, topMenu);
+    fetchProductListing();
+    fetchProductTypes();
+  </script>
+</body>
+</html>
